@@ -24,7 +24,9 @@ namespace PrincessBrideTrivia
 
         public static string GetPercentCorrect(int numberCorrectAnswers, int numberOfQuestions)
         {
-            return (numberCorrectAnswers / numberOfQuestions * 100) + "%";
+            double NC = numberCorrectAnswers;
+            double NQ = numberOfQuestions;
+            return ((NC / NQ) * 100.0) + "%";
         }
 
         public static bool AskQuestion(Question question)
@@ -54,10 +56,15 @@ namespace PrincessBrideTrivia
 
         public static void DisplayQuestion(Question question)
         {
-            Console.WriteLine("Question: " + question.Text);
-            for (int i = 0; i < question.Answers.Length; i++)
+            string questionNullCheck = question?.Text;
+            if (questionNullCheck != null)
             {
-                Console.WriteLine((i + 1) + ": " + question.Answers[i]);
+                Console.WriteLine("Question: " + question.Text);
+
+                for (int i = 0; i < question.Answers.Length; i++)
+                {
+                    Console.WriteLine((i + 1) + ": " + question.Answers[i]);
+                }
             }
         }
 
@@ -68,6 +75,11 @@ namespace PrincessBrideTrivia
 
         public static Question[] LoadQuestions(string filePath)
         {
+            if(filePath == null)
+            {
+                throw new ArgumentNullException("Missing filePath");
+            }
+
             string[] lines = File.ReadAllLines(filePath);
 
             Question[] questions = new Question[lines.Length / 5];
@@ -89,6 +101,8 @@ namespace PrincessBrideTrivia
                 question.Answers[1] = answer2;
                 question.Answers[2] = answer3;
                 question.CorrectAnswerIndex = correctAnswerIndex;
+
+                questions[i] = question;
             }
             return questions;
         }
